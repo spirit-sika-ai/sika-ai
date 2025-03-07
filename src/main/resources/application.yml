@@ -1,3 +1,12 @@
 spring:
   application:
     name: sika-ai
+  ai:
+    openai:
+      base-url: https://api.deepseek.com
+      api-key: sk-4d72289d93514bcfb35bad79b2599db1
+      chat:
+        options:
+          model: deepseek-chat
+      embedding:
+        enabled: false
