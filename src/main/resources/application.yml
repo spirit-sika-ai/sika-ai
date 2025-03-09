@@ -1,12 +1,61 @@
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    property:
+      prefix: ENC(
+      suffix: )
+
 spring:
   application:
     name: sika-ai
   ai:
     openai:
       base-url: https://api.deepseek.com
-      api-key: sk-4d72289d93514bcfb35bad79b2599db1
+      api-key: ENC(UlvfMjJwDiKBVNfq/cNjb0xL+Yn7XgYNHukQzV0WYmbYMyW6KHKgo0bLHdMXSghl)
       chat:
         options:
           model: deepseek-chat
       embedding:
         enabled: false
+  datasource:
+    druid:
+      # 修改为你的 PostgreSQL 数据库地址
+      url: jdbc:postgresql://localhost:5432/sika-ai
+      # 修改为你的数据库用户名
+      username: postgres
+      # 修改为你的数据库密码
+      password: Cm0cVYlLOUSHezRj6fqdYFh9qJo0x0sgPOuoiWXWrgRvqHkEsri5VUrDi9EGqlWTUfHAueI8aScNLiIbuoxSyQ==
+#      driver-class-name: org.postgresql.Driver
+      filters: config,stat,wall,slf4j  # 启用监控和防火墙并解密数据库密码
+      connect-properties:
+        config.decrypt: true
+        config.decrypt.key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAK4I2y35OuZpQkBl3/Tn8QXRpVFNBzP5dzlR9WcVwAJ2dxo2YaQ6HMVSrV97cfU71N/5oPlvKB1F04sYXIxH4oECAwEAAQ==
+      filter:
+        config:
+          enabled: true
+      # Druid 连接池配置
+      initial-size: 5  # 初始化连接数
+      min-idle: 5  # 最小空闲连接数
+      max-active: 20  # 最大连接数
+      max-wait: 60000  # 连接等待超时的时间（毫秒）
+      time-between-eviction-runs-millis: 60000  # 运行空闲连接回收器的时间间隔（毫秒）
+      min-evictable-idle-time-millis: 300000  # 连接保持空闲而不被回收的最小时间（毫秒）
+      validation-query: SELECT 1  # 用于检测连接是否有效的 SQL 语句
+      test-while-idle: true  # 是否在连接空闲时检查其有效性
+      test-on-borrow: false  # 获取连接时不检查有效性，提高性能
+      test-on-return: false  # 归还连接时不检查有效性，提高性能
+      pool-prepared-statements: true  # 是否缓存 preparedStatement
+      max-pool-prepared-statement-per-connection-size: 20  # 缓存 preparedStatement 的大小
+      # 监控 Druid 连接池
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*  # 访问路径
+        login-username: admin  # 监控页面的登录用户名
+        login-password: admin  # 监控页面的登录密码
+        reset-enable: false  # 是否允许重置数据
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*  # 监控所有请求
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"  # 这些请求不监控
+

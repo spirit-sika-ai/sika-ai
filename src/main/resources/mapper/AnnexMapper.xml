@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.sika.ai.mapper.AnnexMapper">
+
+    <resultMap id="BaseResultMap" type="cc.sika.ai.entity.po.Annex">
+            <id property="id" column="ID" />
+            <result property="displayName" column="DISPLAY_NAME" />
+            <result property="extensionType" column="EXTENSION_TYPE" />
+            <result property="fileUrl" column="FILE_URL" />
+            <result property="status" column="STATUS" />
+            <result property="bucketName" column="BUCKET_NAME" />
+            <result property="bucketId" column="BUCKET_ID" />
+            <result property="staffId" column="STAFF_ID" />
+            <result property="messageId" column="MESSAGE_ID" />
+            <result property="createTime" column="CREATE_TIME" />
+            <result property="createBy" column="CREATE_BY" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,DISPLAY_NAME,EXTENSION_TYPE,FILE_URL,STATUS,BUCKET_NAME,
+        BUCKET_ID,STAFF_ID,MESSAGE_ID,CREATE_TIME,CREATE_BY
+    </sql>
+</mapper>

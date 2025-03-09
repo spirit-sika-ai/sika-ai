@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.sika.ai.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="cc.sika.ai.entity.po.User">
+            <id property="id" column="ID" />
+            <result property="nickname" column="NICKNAME" />
+            <result property="username" column="USERNAME" />
+            <result property="password" column="PASSWORD" />
+            <result property="createTime" column="CREATE_TIME" />
+            <result property="createBy" column="CREATE_BY" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,NICKNAME,USERNAME,PASSWORD,CREATE_TIME,CREATE_BY
+    </sql>
+</mapper>

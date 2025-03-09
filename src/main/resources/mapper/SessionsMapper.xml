@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.sika.ai.mapper.SessionsMapper">
+
+    <resultMap id="BaseResultMap" type="cc.sika.ai.entity.po.Sessions">
+            <id property="id" column="ID" />
+            <result property="sessionName" column="SESSION_NAME" />
+            <result property="sessionType" column="SESSION_TYPE" />
+            <result property="staffId" column="STAFF_ID" />
+            <result property="createTime" column="CREATE_TIME" />
+            <result property="status" column="STATUS" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,SESSION_NAME,SESSION_TYPE,STAFF_ID,CREATE_TIME,STATUS
+    </sql>
+</mapper>

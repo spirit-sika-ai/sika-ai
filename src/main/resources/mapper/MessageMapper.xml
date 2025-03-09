@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.sika.ai.mapper.MessageMapper">
+
+    <resultMap id="BaseResultMap" type="cc.sika.ai.entity.po.Message">
+            <id property="id" column="ID" />
+            <result property="sessionId" column="SESSION_ID" />
+            <result property="sendId" column="SEND_ID" />
+            <result property="sendName" column="SEND_NAME" />
+            <result property="content" column="CONTENT" />
+            <result property="type" column="TYPE" />
+            <result property="annex" column="ANNEX" />
+            <result property="createTime" column="CREATE_TIME" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,SESSION_ID,SEND_ID,SEND_NAME,CONTENT,TYPE,
+        ANNEX,CREATE_TIME
+    </sql>
+</mapper>

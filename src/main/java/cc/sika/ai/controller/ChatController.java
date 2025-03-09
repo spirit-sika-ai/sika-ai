@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 小吴来哩
@@ -40,7 +41,7 @@ public class ChatController {
         chatHistoryList.add(new UserMessage(message));
         Prompt prompt = new Prompt(chatHistoryList);
         ChatResponse chatResponse = deepseekModel.call(prompt);
-        if (chatResponse.getResult() != null && chatResponse.getResult().getOutput() != null) {
+        if (!Objects.isNull(chatResponse.getResult()) && !Objects.isNull(chatResponse.getResult().getOutput())) {
             chatHistoryList.add(chatResponse.getResult().getOutput());
         }
         return chatResponse;
