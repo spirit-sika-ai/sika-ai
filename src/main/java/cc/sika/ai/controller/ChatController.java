@@ -1,22 +1,15 @@
 package cc.sika.ai.controller;
 
-import jakarta.annotation.PostConstruct;
+import cc.sika.ai.entity.vo.R;
+import cc.sika.ai.service.message.ChatService;
 import jakarta.annotation.Resource;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.SystemMessage;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author 小吴来哩
@@ -27,30 +20,19 @@ import java.util.Objects;
 public class ChatController {
 
     @Resource
-    private ChatModel deepseekModel;
+    private final ChatService chatService;
 
-    private final List<Message> chatHistoryList = new ArrayList<>();
-
-    @PostConstruct
-    public void init() {
-        chatHistoryList.add(new SystemMessage("You are a helpful assistant."));
+    public ChatController(ChatService chatService) {
+        this.chatService = chatService;
     }
 
     @GetMapping("message")
-    public ChatResponse test(String message) {
-        chatHistoryList.add(new UserMessage(message));
-        Prompt prompt = new Prompt(chatHistoryList);
-        ChatResponse chatResponse = deepseekModel.call(prompt);
-        if (!Objects.isNull(chatResponse.getResult()) && !Objects.isNull(chatResponse.getResult().getOutput())) {
-            chatHistoryList.add(chatResponse.getResult().getOutput());
-        }
-        return chatResponse;
+    public R<ChatResponse> fullReply(@RequestParam(name = "message") String message) {
+        return R.success(chatService.messageFullReply(message));
     }
 
     @GetMapping(value = "stream-message", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ChatResponse> streamMessage(String message) {
-        chatHistoryList.add(new UserMessage(message));
-        Prompt prompt = new Prompt(chatHistoryList);
-        return deepseekModel.stream(prompt);
+    public Flux<R<ChatResponse>> streamMessage(String message) {
+        return chatService.messageStreamReply(message).map(R::success);
     }
 }

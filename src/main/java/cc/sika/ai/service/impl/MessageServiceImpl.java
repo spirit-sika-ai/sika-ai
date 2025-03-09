@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author 22355
- * @createDate 2025-03-08 22:44:53
+ * @since 2025-03-08 22:44:53
  */
 @Service
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements MessageService {

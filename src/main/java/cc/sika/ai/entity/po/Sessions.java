@@ -3,13 +3,14 @@ package cc.sika.ai.entity.po;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 会话记录表
- * @TableName SESSIONS
+ * @since 25-3-8
  */
 @TableName(value ="SESSIONS")
 @Data

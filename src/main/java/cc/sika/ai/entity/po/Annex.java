@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * 附件表
- * @TableName ANNEX
+ * @since 25-3-8
  */
 @TableName(value ="ANNEX")
 @Data
