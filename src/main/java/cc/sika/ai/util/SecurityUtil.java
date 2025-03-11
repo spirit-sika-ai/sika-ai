@@ -27,4 +27,8 @@ public class SecurityUtil {
     public static boolean verifyPassword(String plainPassword, String hashedPassword) {
         return BCrypt.checkpw(plainPassword, hashedPassword);
     }
+
+    private SecurityUtil() {
+        // do nothing
+    }
 }

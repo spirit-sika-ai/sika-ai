@@ -1,15 +1,16 @@
 package cc.sika.ai;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author 小吴来哩
  * @since 2025-03
  */
-public class JasyptEncryptionTest {
+class JasyptEncryptionTest {
     @Test
-    public void generateEncryptedApiKey() {
+    void generateEncryptedApiKey() {
         // 创建加密器实例
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         // 加密算法
@@ -21,7 +22,7 @@ public class JasyptEncryptionTest {
 
         // 生成加密后的密文
         String encryptedApiKey = encryptor.encrypt(apiKey);
-        System.out.println("加密后的 api-key:" + encryptedApiKey);
+        Assertions.assertAll(() -> System.out.println("加密后的 api-key:" + encryptedApiKey));
     }
 
 }

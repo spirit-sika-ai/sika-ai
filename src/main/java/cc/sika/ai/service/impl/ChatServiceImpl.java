@@ -93,7 +93,7 @@ public class ChatServiceImpl implements ChatService {
      * @param signal 响应信号
      * @return 为true时需要缓存
      */
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "null"})
     private boolean needCache(Signal<ChatResponse> signal) {
         if (hasOutput(signal)) {
             return !CharSequenceUtil.isEmpty(signal.get().getResult().getOutput().getText());
