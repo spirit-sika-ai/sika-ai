@@ -7,7 +7,7 @@ import cc.sika.ai.mapper.SessionsMapper;
 import org.springframework.stereotype.Service;
 
 /**
- * @author 22355
+ * @author 小吴来哩
  * @since 2025-03-08 22:44:56
  */
 @Service

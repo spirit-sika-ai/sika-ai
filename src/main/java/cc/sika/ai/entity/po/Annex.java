@@ -3,8 +3,10 @@ package cc.sika.ai.entity.po;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -72,5 +74,7 @@ public class Annex implements Serializable {
     private String createBy;
 
     @TableField(exist = false)
+    @Serial
+    @JsonIgnore
     private static final long serialVersionUID = 1L;
 }

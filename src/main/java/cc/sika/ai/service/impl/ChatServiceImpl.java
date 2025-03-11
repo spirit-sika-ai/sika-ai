@@ -1,6 +1,7 @@
 package cc.sika.ai.service.impl;
 
 import cc.sika.ai.service.message.ChatService;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.PostConstruct;
@@ -67,17 +68,17 @@ public class ChatServiceImpl implements ChatService {
 
     @SuppressWarnings("ConstantConditions")
     private void handleSignal(Signal<ChatResponse> signal) {
-        final Queue<Message> eachResCacheBuffer = new ConcurrentLinkedQueue<>();
+        final Queue<Message> responseMessageCacheBuffer = new ConcurrentLinkedQueue<>();
         // 缓存每次响应的结果
         if (signal.isOnNext()) {
             log.debug("flux stream item: {}", signal.get());
             if (needCache(signal)) {
-                eachResCacheBuffer.add(signal.get().getResult().getOutput());
+                responseMessageCacheBuffer.add(signal.get().getResult().getOutput());
             }
         }
         // 回复完成时将回复的消息添加到聊天记录充当下一次的prompt
         else if (signal.isOnComplete()) {
-            chatHistoryList.addAll(eachResCacheBuffer);
+            chatHistoryList.addAll(responseMessageCacheBuffer);
             // TODO 将聊天内容记录到数据库
             log.info("flux records add completed!");
         } else if (signal.isOnError()) {
@@ -95,7 +96,7 @@ public class ChatServiceImpl implements ChatService {
     @SuppressWarnings("ConstantConditions")
     private boolean needCache(Signal<ChatResponse> signal) {
         if (hasOutput(signal)) {
-            return !StrUtil.isEmpty(signal.get().getResult().getOutput().getText());
+            return !CharSequenceUtil.isEmpty(signal.get().getResult().getOutput().getText());
         }
         return false;
     }

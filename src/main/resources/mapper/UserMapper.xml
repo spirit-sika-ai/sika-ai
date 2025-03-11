@@ -12,8 +12,14 @@
             <result property="createTime" column="CREATE_TIME" />
             <result property="createBy" column="CREATE_BY" />
     </resultMap>
-
-    <sql id="Base_Column_List">
-        ID,NICKNAME,USERNAME,PASSWORD,CREATE_TIME,CREATE_BY
-    </sql>
+    <select id="selectByUsername" resultType="cc.sika.ai.entity.po.User">
+        SELECT "USER"."ID"          AS id,
+               "USER"."NICKNAME"    AS nickname,
+               "USER"."USERNAME"    AS username,
+               "USER"."PASSWORD"    AS password,
+               "USER"."CREATE_TIME" AS createTime,
+               "USER"."CREATE_BY"   AS createBy
+        FROM "USER"
+        WHERE "USER"."USERNAME" = #{username}
+    </select>
 </mapper>
