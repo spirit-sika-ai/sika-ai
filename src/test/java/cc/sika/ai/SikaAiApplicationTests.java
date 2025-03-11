@@ -18,7 +18,7 @@ class SikaAiApplicationTests {
      * 测试生成的密钥与配置是否有问题
      */
     @Test
-    public void testApiKeyIsCorrect() {
+    void testApiKeyIsCorrect() {
         // 预期值必须和生成密文时原来的明文一致
         String expectedApiKey = "sk-XXX(替换为你的api-key)";
         String expectedPassword = "替换为你加密时使用的密钥";
