@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 附件表
@@ -16,6 +19,9 @@ import java.util.Date;
  */
 @TableName(value ="\"ANNEX\"")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Annex implements Serializable {
     /**
      * 附件ID
@@ -75,7 +81,7 @@ public class Annex implements Serializable {
      * 创建时间
      */
     @TableField("\"CREATE_TIME\"")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 创建人ID
