@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
      * @return 错误信息
      */
     @ExceptionHandler({RuntimeException.class, UserException.class})
-    public R<?> exceptionHandler(RuntimeException ex){
+    @SuppressWarnings("rawtypes")
+    public R exceptionHandler(RuntimeException ex){
         log.error("异常信息：{}", ex.getMessage());
         return R.fail(ex.getMessage());
     }
