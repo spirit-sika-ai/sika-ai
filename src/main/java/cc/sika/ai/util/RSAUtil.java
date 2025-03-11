@@ -22,6 +22,10 @@ public final class RSAUtil {
     public static String decrypt(String encryptedText) {
         return rsa.decryptStr(encryptedText, KeyType.PrivateKey);
     }
+    
+    public static String encrypt(String plainText) {
+        return rsa.encryptHex(plainText, KeyType.PublicKey);
+    }
 
     private RSAUtil() {
         // do nothing
