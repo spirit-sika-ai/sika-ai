@@ -18,6 +18,7 @@ public class UserException extends RuntimeException {
         this.code = SERVER_ERROR_CODE;
     }
 
+    @SuppressWarnings("unused")
     public UserException(String message) {
         super(message);
         this.code = SERVER_ERROR_CODE;
