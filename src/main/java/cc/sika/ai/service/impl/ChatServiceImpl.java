@@ -1,9 +1,11 @@
 package cc.sika.ai.service.impl;
 
+import cc.sika.ai.service.MessageService;
 import cc.sika.ai.service.message.ChatService;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +20,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Signal;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static cc.sika.ai.constant.DbConstant.NO_ANNEX;
+import static cc.sika.ai.constant.MessageType.USER_MESSAGE;
 
 /**
  * @author 小吴来哩
@@ -33,6 +39,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ChatServiceImpl implements ChatService {
     @Resource
     private ChatModel deepseekModel;
+    @Resource
+    private MessageService messageService;
 
     /**
      * ChatModel#stream()会采用自定义任务线程task-*执行任务, 而服务器本身会使用netty负责http请求响应
@@ -48,7 +56,10 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatResponse messageFullReply(String message) {
-        // TODO: 记录用户消息到数据库
+        // 记录用户消息到数据库, TODO: 定位会话id?
+        if (StpUtil.isLogin()) {
+            saveMessageToDb(message);
+        }
         chatHistoryList.add(new UserMessage(message));
         Prompt prompt = new Prompt(chatHistoryList);
         ChatResponse chatResponse = deepseekModel.call(prompt);
@@ -64,6 +75,25 @@ public class ChatServiceImpl implements ChatService {
         // TODO: 记录用户消息到数据库
         Prompt prompt = new Prompt(chatHistoryList);
         return deepseekModel.stream(prompt).doOnEach(this::handleSignal);
+    }
+    
+    private void saveMessageToDb(String message) {
+        cc.sika.ai.entity.po.Message messagePo = cc.sika.ai.entity.po.Message.builder()
+            .id(IdUtil.simpleUUID())
+            .type(USER_MESSAGE)
+            .sendId(StpUtil.getLoginId().toString())
+            .sendName(message)
+            .content(message)
+            .annex(NO_ANNEX)
+            .createTime(LocalDateTime.now())
+            .build();
+        messageService.save(messagePo);
+    }
+    
+    private void saveMessageToDb(ChatResponse chatResponse) {
+        if (hasOutput(chatResponse)) {
+            // TODO: 转换AI消息内容, 持久化
+        }
     }
 
     @SuppressWarnings("ConstantConditions")
