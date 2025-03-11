@@ -15,12 +15,15 @@ import java.util.Base64;
 public final class RSAUtil {
     private static final RSA rsa = new RSA();
     @Getter
-    private static final String publicKey = Base64.getEncoder().encodeToString(rsa.getPublicKey().getEncoded());
+    private static final String PUBLIC_KEY = Base64.getEncoder().encodeToString(rsa.getPublicKey().getEncoded());
     @Getter
-    private static final String privateKey = Base64.getEncoder().encodeToString(rsa.getPrivateKey().getEncoded());
+    private static final String PRIVATE_KEY = Base64.getEncoder().encodeToString(rsa.getPrivateKey().getEncoded());
 
     public static String decrypt(String encryptedText) {
         return rsa.decryptStr(encryptedText, KeyType.PrivateKey);
     }
 
+    private RSAUtil() {
+        // do nothing
+    }
 }

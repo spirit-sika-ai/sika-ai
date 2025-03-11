@@ -15,7 +15,7 @@ import static cc.sika.ai.constant.ResponseConstant.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class R<T> implements Serializable {
+public class R<T> {
     private Integer code;
     private String message;
     private T result;

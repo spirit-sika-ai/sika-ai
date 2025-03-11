@@ -8,6 +8,7 @@ import cc.sika.ai.service.UserService;
 import cc.sika.ai.util.RSAUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -31,7 +32,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public String login(UserDTO userDTO) {
         User user = userDTO.getUser();
-        if (ObjectUtil.isNull(user) || StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
+        if (ObjectUtil.isNull(user) || CharSequenceUtil.isBlank(user.getUsername()) || CharSequenceUtil.isBlank(user.getPassword())) {
             throw new UserException("缺少用户名或密码");
         }
         // 解密用户名并做数据库校验
@@ -56,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = UserException.class)
     public String register(User registerDTO) {
         // 校验用户名是否存在
-        if (!StrUtil.isBlank(registerDTO.getUsername()) && userExists(registerDTO.getUsername())) {
+        if (!CharSequenceUtil.isBlank(registerDTO.getUsername()) && userExists(registerDTO.getUsername())) {
             throw new UserException(String.format("未找到用户名为[%s]的用户", registerDTO.getUsername()));
         }
         // 判断系统添加还是用户主动注册
@@ -92,7 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return 用户信息对象
      */
     private User buildUser(User registerDTO, String id) {
-        if (StrUtil.isBlank(id)) {
+        if (CharSequenceUtil.isBlank(id)) {
             id = IdUtil.simpleUUID();
         }
         return User.builder()

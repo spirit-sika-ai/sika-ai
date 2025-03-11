@@ -21,7 +21,7 @@ public class UserController {
 
     @GetMapping("public-key")
     public R<String> getPublicKey() {
-        return R.success(RSAUtil.getPublicKey());
+        return R.success(RSAUtil.getPUBLIC_KEY());
     }
 
     @PostMapping

@@ -9,4 +9,8 @@ public class ResponseConstant {
     public static final String FAIL_MESSAGE = "fail";
     public static final Integer SUCCESS_CODE = 200;
     public static final Integer SERVER_ERROR_CODE = 500;
+
+    private ResponseConstant() {
+        // do nothing
+    }
 }
