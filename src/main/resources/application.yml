@@ -76,6 +76,11 @@ sa-token:
   # 是否输出操作日志
   is-log: true
 
+mybatis-plus:
+  global-config:
+    db-config:
+      schema: public
+
 logging:
   level:
     cc.sika.ai.mapper: debug
