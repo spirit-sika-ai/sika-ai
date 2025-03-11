@@ -17,9 +17,4 @@
             <result property="createTime" column="CREATE_TIME" />
             <result property="createBy" column="CREATE_BY" />
     </resultMap>
-
-    <sql id="Base_Column_List">
-        ID,DISPLAY_NAME,EXTENSION_TYPE,FILE_URL,STATUS,BUCKET_NAME,
-        BUCKET_ID,STAFF_ID,MESSAGE_ID,CREATE_TIME,CREATE_BY
-    </sql>
 </mapper>

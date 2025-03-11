@@ -12,8 +12,4 @@
             <result property="createTime" column="CREATE_TIME" />
             <result property="status" column="STATUS" />
     </resultMap>
-
-    <sql id="Base_Column_List">
-        ID,SESSION_NAME,SESSION_TYPE,STAFF_ID,CREATE_TIME,STATUS
-    </sql>
 </mapper>
