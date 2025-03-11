@@ -1,4 +1,4 @@
-package cc.sika.filter;
+package cc.sika.ai.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
