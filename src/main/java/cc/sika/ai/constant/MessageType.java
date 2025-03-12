@@ -21,6 +21,10 @@ public final class MessageType {
 	 * 工具消息
 	 */
 	public static final Integer TOOL_MESSAGE = 4;
+	/**
+	 * 助理ID
+	 */
+	public static final String ASSISTANT_ID = "ASSISTANT";
 	
 	
 	private MessageType() {

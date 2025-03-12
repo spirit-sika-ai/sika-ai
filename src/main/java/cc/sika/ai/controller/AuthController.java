@@ -5,6 +5,7 @@ import cc.sika.ai.entity.po.User;
 import cc.sika.ai.entity.vo.R;
 import cc.sika.ai.service.UserService;
 import cc.sika.ai.util.RSAUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,11 @@ public class AuthController {
 
     @Resource
     private UserService userService;
+
+    @GetMapping("who")
+    public R<String> who() {
+        return R.success(StpUtil.getLoginIdAsString());
+    }
 
     @GetMapping("public-key")
     public R<String> getPublicKey() {
