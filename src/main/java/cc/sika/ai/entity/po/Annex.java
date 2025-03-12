@@ -89,6 +89,18 @@ public class Annex implements Serializable {
     @TableField("\"CREATE_BY\"")
     private String createBy;
 
+    /**
+     * 更新时间
+     */
+    @TableField("\"UPDATE_TIME\"")
+    private LocalDateTime updateTime;
+
+    /**
+     * 更新人ID
+     */
+    @TableField("\"UPDATE_BY\"")
+    private String updateBy;
+
     @TableField(exist = false)
     @Serial
     @JsonIgnore

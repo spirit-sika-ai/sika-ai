@@ -43,6 +43,8 @@ class AnnexMpTest {
 			.messageId("message-id")
 			.createTime(LocalDateTime.now())
 			.createBy(id)
+			.updateTime(LocalDateTime.now())
+			.updateBy(id)
 			.build();
 		Assertions.assertEquals(1, annexMapper.insert(build));
 		Assertions.assertTrue(annexMapper.selectCount(null) > 0);

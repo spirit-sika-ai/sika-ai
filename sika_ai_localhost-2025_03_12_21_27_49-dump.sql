@@ -18,20 +18,28 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+-- Name: sika-ai; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE SCHEMA public;
+CREATE DATABASE "sika-ai" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'zh-CN';
 
 
-ALTER SCHEMA public OWNER TO pg_database_owner;
+ALTER DATABASE "sika-ai" OWNER TO postgres;
 
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
---
+\encoding SQL_ASCII
+\connect -reuse-previous=on "dbname='sika-ai'"
 
-COMMENT ON SCHEMA public IS 'standard public schema';
-
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
 SET default_tablespace = '';
 
@@ -52,7 +60,9 @@ CREATE TABLE public."ANNEX" (
     "STAFF_ID" character varying(64),
     "MESSAGE_ID" character varying(64),
     "CREATE_TIME" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    "CREATE_BY" character varying(64)
+    "CREATE_BY" character varying(64),
+    "UPDATE_TIME" timestamp(6) without time zone,
+    "UPDATE_BY" character varying(64)
 );
 
 
@@ -140,6 +150,20 @@ COMMENT ON COLUMN public."ANNEX"."CREATE_TIME" IS '创建时间';
 --
 
 COMMENT ON COLUMN public."ANNEX"."CREATE_BY" IS '创建人ID';
+
+
+--
+-- Name: COLUMN "ANNEX"."UPDATE_TIME"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."ANNEX"."UPDATE_TIME" IS '更新时间';
+
+
+--
+-- Name: COLUMN "ANNEX"."UPDATE_BY"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."ANNEX"."UPDATE_BY" IS '更新人ID';
 
 
 --
@@ -233,7 +257,9 @@ CREATE TABLE public."SESSIONS" (
     "SESSION_TYPE" smallint,
     "STAFF_ID" character varying(64),
     "CREATE_TIME" timestamp without time zone,
-    "STATUS" smallint
+    "STATUS" smallint,
+    "UPDATE_TIME" timestamp(6) without time zone,
+    "UPDATE_BY" character varying(64)
 );
 
 
@@ -289,6 +315,20 @@ COMMENT ON COLUMN public."SESSIONS"."STATUS" IS '会话状态';
 
 
 --
+-- Name: COLUMN "SESSIONS"."UPDATE_TIME"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."SESSIONS"."UPDATE_TIME" IS '更新时间';
+
+
+--
+-- Name: COLUMN "SESSIONS"."UPDATE_BY"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."SESSIONS"."UPDATE_BY" IS '更新人ID';
+
+
+--
 -- Name: USER; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -298,7 +338,9 @@ CREATE TABLE public."USER" (
     "USERNAME" character varying(255),
     "PASSWORD" character varying(255),
     "CREATE_TIME" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    "CREATE_BY" character varying(64)
+    "CREATE_BY" character varying(64),
+    "UPDATE_TIME" timestamp(6) without time zone,
+    "UPDATE_BY" character varying(64)
 );
 
 
@@ -354,10 +396,24 @@ COMMENT ON COLUMN public."USER"."CREATE_BY" IS '创建人ID';
 
 
 --
+-- Name: COLUMN "USER"."UPDATE_TIME"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."USER"."UPDATE_TIME" IS '更新时间';
+
+
+--
+-- Name: COLUMN "USER"."UPDATE_BY"; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."USER"."UPDATE_BY" IS '更新时间';
+
+
+--
 -- Data for Name: ANNEX; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."ANNEX" ("ID", "DISPLAY_NAME", "EXTENSION_TYPE", "FILE_URL", "STATUS", "BUCKET_NAME", "BUCKET_ID", "STAFF_ID", "MESSAGE_ID", "CREATE_TIME", "CREATE_BY") FROM stdin;
+COPY public."ANNEX" ("ID", "DISPLAY_NAME", "EXTENSION_TYPE", "FILE_URL", "STATUS", "BUCKET_NAME", "BUCKET_ID", "STAFF_ID", "MESSAGE_ID", "CREATE_TIME", "CREATE_BY", "UPDATE_TIME", "UPDATE_BY") FROM stdin;
 \.
 
 
@@ -373,7 +429,7 @@ COPY public."MESSAGE" ("ID", "SESSION_ID", "SEND_ID", "SEND_NAME", "CONTENT", "T
 -- Data for Name: SESSIONS; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."SESSIONS" ("ID", "SESSION_NAME", "SESSION_TYPE", "STAFF_ID", "CREATE_TIME", "STATUS") FROM stdin;
+COPY public."SESSIONS" ("ID", "SESSION_NAME", "SESSION_TYPE", "STAFF_ID", "CREATE_TIME", "STATUS", "UPDATE_TIME", "UPDATE_BY") FROM stdin;
 \.
 
 
@@ -381,8 +437,8 @@ COPY public."SESSIONS" ("ID", "SESSION_NAME", "SESSION_TYPE", "STAFF_ID", "CREAT
 -- Data for Name: USER; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."USER" ("ID", "NICKNAME", "USERNAME", "PASSWORD", "CREATE_TIME", "CREATE_BY") FROM stdin;
-1	Sika	Sika	\N	2025-03-08 22:24:52.032792	1
+COPY public."USER" ("ID", "NICKNAME", "USERNAME", "PASSWORD", "CREATE_TIME", "CREATE_BY", "UPDATE_TIME", "UPDATE_BY") FROM stdin;
+1	Sika	Sika	\N	2025-03-08 22:24:52.032792	1	\N	\N
 \.
 
 

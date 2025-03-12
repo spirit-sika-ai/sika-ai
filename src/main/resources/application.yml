@@ -84,5 +84,3 @@ mybatis-plus:
 logging:
   level:
     cc.sika.ai.mapper: debug
-  file:
-    name: logs/${spring.application.name}.log

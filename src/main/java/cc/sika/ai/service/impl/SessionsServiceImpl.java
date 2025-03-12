@@ -41,7 +41,8 @@ public class SessionsServiceImpl extends ServiceImpl<SessionsMapper, Sessions> i
 			.staffId(userId)
 			.status(SessionsConstant.SessionStatus.RIGHT)
 			.createTime(LocalDateTime.now())
-			.updateTime(LocalDateTime.now()).build();
+			.updateTime(LocalDateTime.now())
+			.updateBy(userId).build();
 	}
 	
 	/**

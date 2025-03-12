@@ -71,11 +71,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             log.error("解密失败", e);
             throw new UserException(HttpStatus.HTTP_BAD_REQUEST, "请提交正确加密的用户信息");
         }
-        // 校验用户名是否存在
+        // 避免用户名重复
         if (userExists(name)) {
             throw new UserException(HttpStatus.HTTP_UNPROCESSABLE_ENTITY, String.format("用户名[%s]已存在", name));
         }
-        // 判断系统添加还是用户主动注册
+        // 用户注册成功时直接登录并响应token
         if (StpUtil.isLogin()) {
             String loginId = StpUtil.getLoginId().toString();
             User user = buildUser(registerDTO, loginId);
@@ -126,6 +126,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .password(SecurityUtil.encryptPassword(pw))
                 .createTime(LocalDateTime.now())
                 .createBy(id)
+                .updateTime(LocalDateTime.now())
+                .updateBy(id)
                 .build();
     }
 

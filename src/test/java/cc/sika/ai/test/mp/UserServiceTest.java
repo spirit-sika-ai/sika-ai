@@ -39,6 +39,8 @@ class UserServiceTest {
 			.password("password-test")
 			.createTime(LocalDateTime.now())
 			.createBy(id)
+			.updateTime(LocalDateTime.now())
+			.updateBy(id)
 			.build();
 		Assertions.assertEquals(1, userMapper.insert(build));
 		Assertions.assertTrue(userMapper.selectCount(null) > 0);

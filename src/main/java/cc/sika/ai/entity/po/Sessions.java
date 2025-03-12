@@ -52,12 +52,18 @@ public class Sessions implements Serializable {
      */
     @TableField("\"CREATE_TIME\"")
     private LocalDateTime createTime;
-    
+
     /**
-     * 创建时间
+     * 更新时间
      */
     @TableField("\"UPDATE_TIME\"")
     private LocalDateTime updateTime;
+
+    /**
+     * 更新人ID
+     */
+    @TableField("\"UPDATE_BY\"")
+    private String updateBy;
 
     /**
      * 会话状态
