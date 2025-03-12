@@ -74,7 +74,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Flux<ChatResponse> messageStreamReply(String message) {
-        // 将用户发送的数据记录到当前会话
+        // 将用户发送的数据记录到当前会话, 将用户消息充当prompt再次提交会导致AI重复回答之前的问题
         chatHistoryList.add(new UserMessage(message));
         saveUserMessage(message);
         Prompt prompt = new Prompt(chatHistoryList);
