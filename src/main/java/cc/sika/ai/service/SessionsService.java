@@ -10,5 +10,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-03-08 22:44:56
  */
 public interface SessionsService extends IService<Sessions> {
-
+	
+	/**
+	 * 创建一个新的会话, 会话名称自动推导, 会话类型默认1, 同时记录会话人id与创建时间
+	 * @return 会话id
+	 */
+	String createSession();
 }
