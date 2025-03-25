@@ -13,11 +13,12 @@ import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.ModelResponse;
+import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Signal;
@@ -39,10 +40,14 @@ import static cc.sika.ai.constant.MessageType.*;
 @Service
 @Slf4j
 public class ChatServiceImpl implements ChatService {
+    @Value("${spring.ai.openai.chat.options.max-tokens}")
+    private Integer maxToken;
     @Resource
-    private ChatModel deepseekModel;
+    private OpenAiChatModel deepseekModel;
     @Resource
     private MessageService messageService;
+
+    private static final SystemMessage initMessage = new SystemMessage("You are a helpful assistant.");
 
     /**
      * ChatModel#stream()会采用自定义任务线程task-*执行任务, 而服务器本身会使用netty负责http请求响应
@@ -55,7 +60,7 @@ public class ChatServiceImpl implements ChatService {
 
     @PostConstruct
     public void init() {
-        chatHistoryList.add(new SystemMessage("You are a helpful assistant."));
+        chatHistoryList.add(initMessage);
     }
 
     @Override
@@ -64,7 +69,7 @@ public class ChatServiceImpl implements ChatService {
         if (StpUtil.isLogin()) {
             saveUserMessage(message);
         }
-        chatHistoryList.add(new UserMessage(message));
+        withUserMessage(message);
         Prompt prompt = new Prompt(chatHistoryList);
         ChatResponse chatResponse = deepseekModel.call(prompt);
         addToPrompt(chatResponse);
@@ -74,25 +79,62 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Flux<ChatResponse> messageStreamReply(String message) {
-        // 将用户发送的数据记录到当前会话, 将用户消息充当prompt再次提交会导致AI重复回答之前的问题
-        chatHistoryList.add(new UserMessage(message));
+        if (CharSequenceUtil.isBlank(message)) {
+            return Flux.empty();
+        }
+        withUserMessage(message);
         saveUserMessage(message);
         Prompt prompt = new Prompt(chatHistoryList);
         return deepseekModel.stream(prompt).doOnEach(this::handleSignal);
     }
-    
+
+    private void limitTokenWindow(String newMessage) {
+        int maxTokens = ObjectUtil
+                .defaultIfNull(maxToken, Integer::intValue, 1024 * 64);
+        int newMsgSize = ObjectUtil.defaultIfBlank(newMessage, "").length() / 4;
+        // 加上新消息后的总token
+        int addNewMsgSize = calculateTokens() + newMsgSize;
+        /* 窗口溢出, 移除最旧的非系统消息, 需要防止移除后token仍然溢出的情况 */
+        while (addNewMsgSize >= maxTokens) {
+            for (int i = 0; i < chatHistoryList.size(); i++) {
+                Message message = chatHistoryList.get(i);
+                if (message instanceof AssistantMessage) {
+                    chatHistoryList.remove(i);
+                    break;
+                }
+            }
+            addNewMsgSize = calculateTokens() + newMsgSize;
+        }
+    }
+
+    private Integer calculateTokens() {
+        return this.chatHistoryList.stream()
+                .mapToInt(message -> message.getText().length() / 4)
+                .sum();
+    }
+
+    /**
+     * 移除掉prompt中之前的用户消息并添加新的用户消息
+     *
+     * @param message 用户消息
+     */
+    private void withUserMessage(String message) {
+        chatHistoryList.add(new UserMessage(message));
+        limitTokenWindow(message);
+    }
+
     private void saveUserMessage(String message) {
         cc.sika.ai.entity.po.Message messagePo = cc.sika.ai.entity.po.Message.builder()
-            .id(IdUtil.simpleUUID())
-            // TODO: 当前为新会话 ? 如何获取会话ID : 当前会话ID
-            .sessionId(IdUtil.simpleUUID())
-            .sendId(StpUtil.getLoginId().toString())
-            .sendName(message)
-            .content(message)
-            .annex(NO_ANNEX)
-            .type(USER_MESSAGE)
-            .createTime(LocalDateTime.now())
-            .build();
+                .id(IdUtil.simpleUUID())
+                // TODO: 当前为新会话 ? 如何获取会话ID : 当前会话ID
+                .sessionId(IdUtil.simpleUUID())
+                .sendId(StpUtil.getLoginId().toString())
+                .sendName(message)
+                .content(message)
+                .annex(NO_ANNEX)
+                .type(USER_MESSAGE)
+                .createTime(LocalDateTime.now())
+                .build();
         messageService.save(messagePo);
     }
 
@@ -114,7 +156,7 @@ public class ChatServiceImpl implements ChatService {
     private void saveAssistantMessage(String message) {
         messageService.save(toMessagePo(message));
     }
-    
+
     private void saveAssistantMessage(ChatResponse chatResponse) {
         if (hasOutput(chatResponse)) {
             chatResponse.getResults()
@@ -148,6 +190,7 @@ public class ChatServiceImpl implements ChatService {
             log.trace("log prompt done!");
             // 将聊天内容记录到数据库
             saveAssistantMessage(fullResponse);
+            log.debug("assistant tell: {}", fullResponse);
             // 清空缓冲区
             responseMessageBuffer.setEmptyValue("");
             log.trace("flux records add completed!");
@@ -160,6 +203,7 @@ public class ChatServiceImpl implements ChatService {
     /**
      * 校验信号是否存在需要缓存的内容, 具备文本消息, 且文本消息不为null
      * <p>不可见字符也将被当作需要缓存内容</p>
+     *
      * @param signal 响应信号
      * @return 为true时需要缓存
      */
@@ -181,11 +225,12 @@ public class ChatServiceImpl implements ChatService {
 
     /**
      * 判断响应助理响应内容有内容并具有 AssistantMessage 对象
+     *
      * @param chatResponse 助理响应结果
      * @return 有内容时为true
      */
     private boolean hasOutput(ChatResponse chatResponse) {
-        if (notEmptyField(chatResponse)) {
+        if (!notEmptyField(chatResponse)) {
             return false;
         }
         return Optional.of(chatResponse)
@@ -210,6 +255,7 @@ public class ChatServiceImpl implements ChatService {
         }
         return Boolean.parseBoolean(res.getMetadata().get(EMPTY_KEY));
     }
+
     private boolean notEmptyField(Generation res) {
         if (!res.getMetadata().containsKey(EMPTY_KEY)) {
             return true;
@@ -224,7 +270,7 @@ public class ChatServiceImpl implements ChatService {
      */
     private void addToPrompt(ChatResponse chatResponse) {
         if (hasOutput(chatResponse)) {
-            chatHistoryList.add(this.mapToMessage(chatResponse));
+            chatHistoryList.add(this.mapToAssistantMessage(chatResponse));
         }
     }
 
@@ -234,7 +280,7 @@ public class ChatServiceImpl implements ChatService {
      * @param chatResponse chatModel的响应结果
      * @return AssistantMessage 助手类型消息
      */
-    private Message mapToMessage(ChatResponse chatResponse) {
+    private AssistantMessage mapToAssistantMessage(ChatResponse chatResponse) {
         return chatResponse.getResult().getOutput();
     }
 }
