@@ -1,10 +1,10 @@
-package cc.sika.ai.service.impl;
+package cc.sika.ai.service.persistence.impl;
 
 import cc.sika.ai.entity.dto.UserDTO;
 import cc.sika.ai.entity.po.User;
 import cc.sika.ai.exception.UserException;
 import cc.sika.ai.mapper.UserMapper;
-import cc.sika.ai.service.UserService;
+import cc.sika.ai.service.persistence.UserService;
 import cc.sika.ai.util.RSAUtil;
 import cc.sika.ai.util.SecurityUtil;
 import cn.dev33.satoken.stp.StpUtil;

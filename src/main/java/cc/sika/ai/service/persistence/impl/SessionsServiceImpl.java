@@ -1,10 +1,10 @@
-package cc.sika.ai.service.impl;
+package cc.sika.ai.service.persistence.impl;
 
 import cc.sika.ai.constant.SessionsConstant;
 import cc.sika.ai.entity.po.Sessions;
 import cc.sika.ai.exception.UserException;
 import cc.sika.ai.mapper.SessionsMapper;
-import cc.sika.ai.service.SessionsService;
+import cc.sika.ai.service.persistence.SessionsService;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpStatus;

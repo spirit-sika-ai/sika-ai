@@ -1,4 +1,4 @@
-package cc.sika.ai.service;
+package cc.sika.ai.service.persistence;
 
 import cc.sika.ai.entity.po.Sessions;
 import com.baomidou.mybatisplus.extension.service.IService;

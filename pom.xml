@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>cc.sika</groupId>
     <artifactId>sika-ai</artifactId>
@@ -18,7 +18,16 @@
         <license/>
     </licenses>
     <developers>
-        <developer/>
+        <developer>
+            <name>小吴来哩</name>
+            <email>spirit223556@gmail.com</email>
+            <timezone>+8</timezone>
+        </developer>
+        <developer>
+            <name>高</name>
+            <email>1074209561@qq.com</email>
+            <timezone>+8</timezone>
+        </developer>
     </developers>
     <scm>
         <connection/>
@@ -43,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId> <!-- Add this for WebFlux support -->
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,6 +89,14 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.36</version>
         </dependency>
+        <!--分词-->
+        <dependency>
+            <groupId>com.hankcs</groupId>
+            <artifactId>hanlp</artifactId>
+            <version>portable-1.8.6</version>
+        </dependency>
+
+
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>

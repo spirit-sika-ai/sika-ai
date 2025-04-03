@@ -1,8 +1,8 @@
-package cc.sika.ai.service.impl;
+package cc.sika.ai.service.persistence.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cc.sika.ai.entity.po.Message;
-import cc.sika.ai.service.MessageService;
+import cc.sika.ai.service.persistence.MessageService;
 import cc.sika.ai.mapper.MessageMapper;
 import org.springframework.stereotype.Service;
 

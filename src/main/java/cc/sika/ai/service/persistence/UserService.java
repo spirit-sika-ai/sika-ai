@@ -1,4 +1,4 @@
-package cc.sika.ai.service;
+package cc.sika.ai.service.persistence;
 
 import cc.sika.ai.entity.dto.UserDTO;
 import cc.sika.ai.entity.po.User;

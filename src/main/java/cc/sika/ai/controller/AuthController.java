@@ -3,7 +3,7 @@ package cc.sika.ai.controller;
 import cc.sika.ai.entity.dto.UserDTO;
 import cc.sika.ai.entity.po.User;
 import cc.sika.ai.entity.vo.R;
-import cc.sika.ai.service.UserService;
+import cc.sika.ai.service.persistence.UserService;
 import cc.sika.ai.util.RSAUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.Resource;

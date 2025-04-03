@@ -1,8 +1,8 @@
-package cc.sika.ai.service.impl;
+package cc.sika.ai.service.persistence.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cc.sika.ai.entity.po.Annex;
-import cc.sika.ai.service.AnnexService;
+import cc.sika.ai.service.persistence.AnnexService;
 import cc.sika.ai.mapper.AnnexMapper;
 import org.springframework.stereotype.Service;
 

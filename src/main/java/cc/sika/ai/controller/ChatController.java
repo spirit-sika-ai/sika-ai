@@ -1,7 +1,7 @@
 package cc.sika.ai.controller;
 
 import cc.sika.ai.entity.vo.R;
-import cc.sika.ai.service.message.ChatService;
+import cc.sika.ai.service.chat.SessionChat;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.http.MediaType;
@@ -20,19 +20,21 @@ import reactor.core.publisher.Flux;
 public class ChatController {
 
     @Resource
-    private final ChatService chatService;
+    private final SessionChat sessionChat;
 
-    public ChatController(ChatService chatService) {
-        this.chatService = chatService;
+    public ChatController(SessionChat sessionChat) {
+        this.sessionChat = sessionChat;
     }
 
     @GetMapping("message")
-    public R<ChatResponse> fullReply(@RequestParam(name = "message") String message) {
-        return R.success(chatService.messageFullReply(message));
+    public R<ChatResponse> fullReply(@RequestParam(name = "message") String message,
+                                     @RequestParam(name = "sessionId", required = false) String sessionId) {
+        return R.success(sessionChat.fullReply(message, sessionId));
     }
 
     @GetMapping(value = "stream-message", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<R<ChatResponse>> streamMessage(String message) {
-        return chatService.messageStreamReply(message).map(R::success);
+    public Flux<R<ChatResponse>> streamMessage(@RequestParam(name = "message") String message,
+                                               @RequestParam(name = "sessionId", required = false) String sessionId) {
+        return sessionChat.streamReply(message, sessionId).map(R::success);
     }
 }
