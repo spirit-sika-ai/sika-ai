@@ -38,7 +38,7 @@ public class Sessions implements Serializable {
     /**
      * 类型: 1单聊, 2群聊
      */
-    @TableField("\"SESSION_TYPE\"\"")
+    @TableField("\"SESSION_TYPE\"")
     private Integer sessionType;
 
     /**
@@ -70,6 +70,12 @@ public class Sessions implements Serializable {
      */
     @TableField("\"STATUS\"")
     private Integer status;
+
+    /**
+     * AI会话ID
+     */
+    @TableField("\"SESSION_ID_MODEL\"")
+    private String sessionIdModel;
 
     @TableField(exist = false)
     @JsonIgnore

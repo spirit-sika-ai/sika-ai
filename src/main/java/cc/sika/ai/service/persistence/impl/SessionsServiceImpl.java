@@ -28,11 +28,19 @@ public class SessionsServiceImpl extends ServiceImpl<SessionsMapper, Sessions> i
 			throw new UserException(HttpStatus.HTTP_UNAUTHORIZED, DEFAULT_MESSAGE);
 		}
 		String currentId = StpUtil.getLoginIdAsString();
-		Sessions sessions = buildSession(currentId);
+		return createSession(currentId);
+	}
+
+	@Override
+	public String createSession(String sessionId) {
+		if (!StpUtil.isLogin()) {
+			throw new UserException(HttpStatus.HTTP_UNAUTHORIZED, DEFAULT_MESSAGE);
+		}
+		Sessions sessions = buildSession(sessionId);
 		save(sessions);
 		return sessions.getId();
 	}
-	
+
 	private Sessions buildSession(String userId) {
 		return Sessions.builder()
 			.id(IdUtil.fastUUID())
@@ -44,13 +52,6 @@ public class SessionsServiceImpl extends ServiceImpl<SessionsMapper, Sessions> i
 			.updateTime(LocalDateTime.now())
 			.updateBy(userId).build();
 	}
-	
-	/**
-	 * 通过ai会话id获取新名称
-	 * @param sessionId
-	 * @param newSessionName
-	 */
-	public void updateSessionName(String sessionId, String newSessionName) {}
 }
 
 
