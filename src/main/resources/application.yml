@@ -19,8 +19,10 @@ spring:
           model: deepseek-chat
           # ds 给出的建议为: {代码生成/数学解题: 0}, {数据抽取/分析: 1.0}, {通用对话/翻译: 1.3}, {创意类写作/诗歌创作: 1.5}
           temperature: 1.3
-          # ds 默认最大tokens 30K, 最大64k
-          max-tokens: 30720
+          # ds 回复长度  最大 8k, openAi最大 18192
+          max-tokens: 8192
+          # ds 上下文最大长度 64k
+          max-context-length: 30720
       embedding:
         enabled: false
   datasource:
