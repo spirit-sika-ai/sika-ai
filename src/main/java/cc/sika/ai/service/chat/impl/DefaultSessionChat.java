@@ -32,19 +32,21 @@ import java.util.StringJoiner;
 @Slf4j
 public class DefaultSessionChat implements SessionChat {
 
-    private static final SessionManager sessionManager = SessionManager.getInstance();
-    // 缓存每次流式响应的结果
-    private final StringJoiner responseMessageBuffer = new StringJoiner("");
+    @Resource
+    private SessionManager sessionManager;
     @Resource
     private ChatModel deepseekModel;
     @Resource
     private ApplicationContext applicationContext;
+    // 缓存每次流式响应的结果
+    private final StringJoiner responseMessageBuffer = new StringJoiner("");
+
 
     /**
      * 生成新的会话并返回会话ID
      * @return 会话id字符串
      */
-    private String buildNewSession() {
+    private synchronized String buildNewSession() {
         String newSessionId = String.valueOf(sessionManager.getSnowflakeId());
         sessionManager.addContextManager(newSessionId, applicationContext.getBean(ContextManager.class));
         return newSessionId;
@@ -72,7 +74,6 @@ public class DefaultSessionChat implements SessionChat {
         }
         // 获取当前会话的上下文, 限制上下文长度添加用户消息后添加到prompt中
         ContextManager contextManager = sessionManager.getContextManager(currentSession);
-        // TODO: 会话获取不到处理
         List<Message> messageContent = contextManager.buildPrompts(message);
         Prompt prompt = new Prompt(messageContent);
         ChatResponse response = deepseekModel.call(prompt);
@@ -91,7 +92,6 @@ public class DefaultSessionChat implements SessionChat {
         }
         // 获取当前会话的上下文, 限制上下文长度添加用户消息后添加到prompt中
         ContextManager contextManager = sessionManager.getContextManager(currentSession);
-        // TODO: 会话获取不到处理
         List<Message> messages = contextManager.buildPrompts(message);
         Prompt prompt = new Prompt(messages);
         // 构建流式响应会话支持SSE并返回, 同时处理每次响应的内容
