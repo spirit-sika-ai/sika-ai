@@ -9,6 +9,8 @@ import cn.hutool.extra.tokenizer.Result;
 import cn.hutool.extra.tokenizer.TokenizerEngine;
 import cn.hutool.extra.tokenizer.TokenizerUtil;
 import com.google.common.util.concurrent.AtomicDouble;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -26,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *     <li>确保上下文被正确持久化, 如果消息需要持久化</li>
  *     <li>限制上下文长度在合理范围</li>
  * </ol>
+ *
  * @author 小吴来哩
  * @since 2025-04
  */
@@ -40,11 +44,24 @@ public class ContextManager implements WindowLimit {
      */
     protected final List<Message> chatContext = new CopyOnWriteArrayList<>();
 
-    @Value("${spring.ai.openai.chat.options.max-tokens}")
+    @Getter
+    @Setter
+    private LocalDateTime lastActivityTime;
+
+    @Value("${spring.ai.openai.chat.options.max-context-length}")
     private Integer maxToken;
+
+    public ContextManager() {
+        this.lastActivityTime = LocalDateTime.now();
+    }
+
+    public void updateLastActivityTime() {
+        this.lastActivityTime = LocalDateTime.now();
+    }
 
     /**
      * 确保上下文不溢出后将新消息添加到上下文, 再返回一整个上下文对象
+     *
      * @param message 新消息
      * @return 当前会话的所有上下文内容
      */
@@ -56,6 +73,7 @@ public class ContextManager implements WindowLimit {
 
     /**
      * 获取当前会话上下文内容, 不做窗口溢出处理
+     *
      * @return 所有聊天内容
      */
     public List<Message> buildPrompts() {
@@ -98,6 +116,7 @@ public class ContextManager implements WindowLimit {
     /**
      * 计算消息的token用量
      * <p>分词后根据中英文乘负载因子得出token长度</p>
+     *
      * @param newMessage 消息内容
      * @return -
      */
