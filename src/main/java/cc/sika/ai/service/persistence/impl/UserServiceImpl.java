@@ -45,7 +45,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userQuery.eq(User::getUsername, decryptedUsername);
         User selectedUser = baseMapper.selectOne(userQuery);
         if (ObjectUtil.isEmpty(selectedUser)) {
-            throw new UserException(HttpStatus.HTTP_BAD_REQUEST, String.format("用户[%s]不存在", decryptedUsername));
+            throw new UserException(HttpStatus.HTTP_BAD_REQUEST,
+                    CharSequenceUtil.format("用户[{}]不存在", decryptedUsername));
         }
         // 用户信息存在, 解密密码并校验登录
         String decryptedPassword = RSAUtil.decrypt(user.getPassword());
