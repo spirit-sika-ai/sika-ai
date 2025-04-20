@@ -29,6 +29,7 @@ public class ChatController {
     @GetMapping("message")
     public R<ChatResponse> fullReply(@RequestParam(name = "message") String message,
                                      @RequestParam(name = "sessionId", required = false) String sessionId) {
+        // http://139.159.236.189:8080/sika-ai-service/chat/message?message=给我讲个笑话
         return R.success(sessionChat.fullReply(message, sessionId));
     }
 

@@ -8,8 +8,8 @@ import cc.sika.ai.service.persistence.UserService;
 import cc.sika.ai.util.RSAUtil;
 import cc.sika.ai.util.SecurityUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.CryptoException;
 import cn.hutool.http.HttpStatus;
@@ -32,7 +32,7 @@ import static cc.sika.ai.util.SecurityUtil.verifyPassword;
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
+    private static final Snowflake ID_GENERATOR = new Snowflake(1, 2);
     @Override
     public String login(UserDTO userDTO) {
         User user = userDTO.getUser();
@@ -65,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String name;
         try {
 	        if (CharSequenceUtil.isBlank(registerDTO.getUsername())) {
-                throw new UserException(HttpStatus.HTTP_BAD_REQUEST, "请提交正确加密的用户信息");
+                throw new UserException(HttpStatus.HTTP_BAD_REQUEST, "用户名不能为空");
 	        }
             name = RSAUtil.decrypt(registerDTO.getUsername());
         } catch (CryptoException e) {
@@ -86,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         else {
             User user = buildUser(registerDTO, null);
             assertInsertSuccess(baseMapper.insert(user));
-            // 注册完成直接登录
+            // 注册完成直接登录, 登录成功响应token
             return doLogin(user.getId());
         }
         return "";
@@ -107,7 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     private User buildUser(User registerDTO, String id) {
         if (CharSequenceUtil.isBlank(id)) {
-            id = IdUtil.simpleUUID();
+            id = ID_GENERATOR.nextIdStr();
         }
         String pw;
         String name;

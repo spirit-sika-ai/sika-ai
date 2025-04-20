@@ -66,6 +66,7 @@ public class DefaultSessionChat implements SessionChat {
 
     @Override
     public ChatResponse fullReply(String message, String currentSession) {
+        log.info("full reply: deal session: [{}]", currentSession);
         if (CharSequenceUtil.isBlank(message)) {
             return ChatResponse.builder().build();
         }
@@ -84,6 +85,7 @@ public class DefaultSessionChat implements SessionChat {
 
     @Override
     public Flux<ChatResponse> streamReply(String message, String currentSession) {
+        log.info("stream reply: deal session: [{}]", currentSession);
         if (CharSequenceUtil.isBlank(message)) {
             return Flux.empty();
         }
